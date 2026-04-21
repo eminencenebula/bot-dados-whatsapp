@@ -12,7 +12,9 @@ app.listen(3000, () => {
   console.log('Servidor web ativo');
 });
 
-const client = new Client();
+const client = new Client({
+  authStrategy: new (require('whatsapp-web.js').LocalAuth)()
+});
 
 client.on('qr', qr => {
   qrcode.generate(qr, { small: true });
