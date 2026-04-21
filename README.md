@@ -1,6 +1,6 @@
 🎲 Bot de Dados para RPG no WhatsApp
 
-Bot simples de rolagem de dados para RPG via WhatsApp, desenvolvido com Node.js.
+Bot de rolagem de dados para RPG via WhatsApp, desenvolvido com Node.js.
 
 🚀 Funcionalidades
 - Rolagem de dados (ex: /roll 2d6)
