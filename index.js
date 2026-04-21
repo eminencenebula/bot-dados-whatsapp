@@ -1,4 +1,4 @@
-const { Client } = require('whatsapp-web.js');
+const { Client, LocalAuth } = require('whatsapp-web.js');
 const qrcode = require('qrcode-terminal');
 const express = require('express');
 
@@ -8,12 +8,37 @@ app.get('/', (req, res) => {
   res.send('Bot de dados rodando 🎲');
 });
 
-app.listen(3000, () => {
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
   console.log('Servidor web ativo');
-});
+}); 
 
 const client = new Client({
-  authStrategy: new (require('whatsapp-web.js').LocalAuth)()
+  authStrategy: new LocalAuth({
+    dataPath: './.wwebjs_auth'
+  }),
+  puppeteer: {
+    headless: true,
+    args: [
+      '--no-sandbox',
+      '--disable-setuid-sandbox',
+      '--disable-dev-shm-usage',
+      '--disable-accelerated-2d-canvas',
+      '--no-first-run',
+      '--no-zygote',
+      '--single-process',
+      '--disable-gpu'
+    ]
+  }
+});
+
+client.on('auth_failure', msg => {
+  console.error('Erro de autenticação:', msg);
+});
+
+client.on('disconnected', reason => {
+  console.log('Bot desconectado:', reason);
 });
 
 client.on('qr', qr => {
@@ -29,6 +54,8 @@ function rollDice(sides) {
 }
 
 client.on('message', message => {
+  if (message.fromMe) return;
+
   console.log('Mensagem recebida:', message.body);
 
   const text = message.body.toLowerCase().trim();
