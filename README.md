@@ -23,13 +23,13 @@ Bot simples de rolagem de dados para RPG via WhatsApp, desenvolvido com Node.js.
 - Express
 - Puppeteer
 
+📌 Observações
+O bot usa WhatsApp Web (não oficial)
+Requer autenticação via QR Code
+Pode ser hospedado em servidores como Render
+
 ⚙️ Como rodar localmente
 
 ```bash
 npm install
 node index.js
-
-📌 Observações
-O bot usa WhatsApp Web (não oficial)
-Requer autenticação via QR Code
-Pode ser hospedado em servidores como Render
