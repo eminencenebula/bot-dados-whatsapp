@@ -32,34 +32,45 @@ client.on('message', message => {
   const text = message.body.toLowerCase().trim();
 
   if (text.startsWith('/roll')) {
-    const match = text.match(/(\d+)d(\d+)/);
+    const expression = text.replace('/roll', '').trim();
 
-    if (match) {
-      const quantidade = parseInt(match[1]);
-      const lados = parseInt(match[2]);
+    const parts = expression.split('+');
+    let total = 0;
+    let detalhes = [];
 
-      let resultados = [];
+    parts.forEach(part => {
+      part = part.trim();
 
-      for (let i = 0; i < quantidade; i++) {
-        resultados.push(Math.floor(Math.random() * lados) + 1);
+      if (part.includes('d')) {
+        let [quantidade, lados] = part.split('d');
+
+        // permite "d20" (sem número antes)
+        quantidade = quantidade === '' ? 1 : parseInt(quantidade);
+        lados = parseInt(lados);
+
+        if (!isNaN(quantidade) && !isNaN(lados)) {
+          let resultados = [];
+
+          for (let i = 0; i < quantidade; i++) {
+            const roll = Math.floor(Math.random() * lados) + 1;
+            resultados.push(roll);
+            total += roll;
+          }
+
+          detalhes.push(`${quantidade}d${lados} [${resultados.join(', ')}]`);
+        }
+
+      } else {
+        const numero = parseInt(part);
+
+        if (!isNaN(numero)) {
+          total += numero;
+          detalhes.push(`${numero}`);
+        }
       }
+    });
 
-      const soma = resultados.reduce((a, b) => a + b, 0);
-
-      message.reply(`🎲 ${quantidade}d${lados}: [${resultados.join(', ')}] → Total: ${soma}`);
-    } else {
-      message.reply('Usa assim: /roll 2d6');
-    }
-
-  } else if (text.startsWith('/d')) {
-    const sides = parseInt(text.replace('/d', ''));
-
-    if (!isNaN(sides)) {
-      const result = rollDice(sides);
-      message.reply(`🎲 d${sides}: ${result}`);
-    } else {
-      message.reply('Usa assim: /d20, /d6...');
-    }
+    message.reply(`🎲 ${expression}\n➡️ ${detalhes.join(' + ')}\n🏆 Total: ${total}`);
   }
 });
 
