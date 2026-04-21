@@ -54,7 +54,7 @@ function rollDice(sides) {
 }
 
 client.on('message', message => {
-  if (message.fromMe) return;
+  // if (message.fromMe) return;
 
   console.log('Mensagem recebida:', message.body);
 
